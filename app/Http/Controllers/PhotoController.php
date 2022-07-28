@@ -8,6 +8,7 @@ use App\Models\Player;
 use Illuminate\Support\Str;
 use Validator;
 use Auth;
+use Illuminate\Support\Facades\Storage;  //画像ファイル削除機能のため追加
 
 class PhotoController extends Controller
 {
@@ -70,9 +71,13 @@ class PhotoController extends Controller
     public function edit($id)
     {
         $photo = Photo::find($id);
+        // $photos = Photo::all();
         $players = $photo->players->pluck('id')->toArray();
         $playerList = Player::all();
         return view('photo.edit', compact('photo', 'players', 'playerList'));
+        // return view('photo.edit', compact('photo', 'photos', 'players', 'playerList'));
+
+
     }
 
     /**
@@ -102,7 +107,19 @@ class PhotoController extends Controller
      */
     public function destroy($id)
     {
+
         $photo = Photo::find($id);
+        // アップロード済みの写真のパスを取得
+        $path = $photo->path;
+        // $target_path = public_path('/uploads/');
+        // $npath = $target_path . $path;
+        // dd($npath);
+        
+        // ファイルが登録されていれば削除
+        if ($path !== '') {
+          Storage::disk('public')->delete('uploads/' . $path);
+        }
+
         $photo->delete();
         $photo->players()->detach();
         return redirect()->route('photo.index')->with('success', '削除完了しました');
@@ -130,9 +147,13 @@ class PhotoController extends Controller
                 //  dd($fileName); 
         
                 //public/uploadフォルダを作成
-                $target_path = public_path('/uploads/');
+                // $target_path = public_path('/uploads/');
                 //ファイルをpublic/uploadフォルダに移動
-                $file->move($target_path,$fileName);
+                // $file->move($target_path,$fileName);
+
+
+                //ファイルを cms/storage/app/public/uploadsに、$fileNameで保存。 storeAs('ディスク内のディレクトリー', 'ファイル名', 'ディスク');
+                $file->storeAs('uploads', $fileName , 'public');
         
                  // 画像のファイル名を任意のDBに保存
                  $photo = Photo::create([

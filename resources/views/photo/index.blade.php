@@ -49,7 +49,7 @@
 
     @foreach($photos->sortByDesc('date') as $photo)  <!--古いものから並べるにはsortBy()-->
     <div style="width: 18rem; float:left; margin: 1px;">
-    <a href="{{ route('photo.edit',$photo->id)}}"><img src="/uploads/{{ $photo->path }}" style="width:100%;"/></a>
+    <a href="{{ route('photo.edit',$photo->id)}}"><img src="storage/uploads/{{ $photo->path }}" style="width:100%;"/></a>
         <!-- <img src="/uploads/{{ $photo->path }}" style="width:100%;"/> -->
         <p>{{ $photo->date }}</p>
     </div>
