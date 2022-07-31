@@ -128,49 +128,64 @@ class PhotoController extends Controller
         // 画像アップロード処理
     public function upload(Request $request){
 
-            // バリデーション 
-             $validator = $request->validate( [
-                 'photo' => 'required|file|image|max:20480', 
-             ]);
+        //複数の画像ファイル取得
+        $files = $request->file('photo');  //修正
+        // dd($files);
+
+        // バリデーション 
+            //  $validator = $request->validate( [
+            //      'photo' => 'required|file|image|max:20480', 
+            //  ]);
+
             // 画像ファイル取得
-            $file = $request->photo;
+            // $file = $request->photo;
+            // $files = $request->file('photo');  //修正
+            // dd($files);
+
             //画像ファイルのexifデータ取得、撮影日取得
-            $exifdata=exif_read_data($file, 0, true);
-            $dateTimeOriginal = isset($exifdata["EXIF"]['DateTimeOriginal']) ? $exifdata["EXIF"]['DateTimeOriginal'] : "";
-            // dd($dateTimeOriginal);
-        
-            if ( !empty($file) ) {
-                 // ファイルの拡張子取得
-                 $ext = $file->guessExtension();
-                 //ファイル名を生成
-                 $fileName = Str::random(32).'.'.$ext;
-                //  dd($fileName); 
-        
-                //public/uploadフォルダを作成
-                // $target_path = public_path('/uploads/');
-                //ファイルをpublic/uploadフォルダに移動
-                // $file->move($target_path,$fileName);
+            if ( !empty($files) ){
+            foreach($files as $file){
+             
+                $exifdata=exif_read_data($file, 0, true);
+                $dateTimeOriginal = isset($exifdata["EXIF"]['DateTimeOriginal']) ? $exifdata["EXIF"]['DateTimeOriginal'] : "";
+             
+                // if ( !empty($file) ) {
+                    // ファイルの拡張子取得
+                    $ext = $file->guessExtension();
+                    //ファイル名を生成
+                    $fileName = Str::random(32).'.'.$ext;
+                    //  dd($fileName); 
+            
+                    //public/uploadフォルダを作成
+                    // $target_path = public_path('/uploads/');
+                    //ファイルをpublic/uploadフォルダに移動
+                    // $file->move($target_path,$fileName);
 
 
-                //ファイルを cms/storage/app/public/uploadsに、$fileNameで保存。 storeAs('ディスク内のディレクトリー', 'ファイル名', 'ディスク');
-                $file->storeAs('uploads', $fileName , 'public');
-        
-                 // 画像のファイル名を任意のDBに保存
-                 $photo = Photo::create([
-                    "path" => $fileName,
-                    "date" => $dateTimeOriginal,
-                ]);
+                    //ファイルを cms/storage/app/public/uploadsに、$fileNameで保存。 storeAs('ディスク内のディレクトリー', 'ファイル名', 'ディスク');
+                    $file->storeAs('uploads', $fileName , 'public');
+            
+                    // 画像のファイル名を任意のDBに保存
+                    $photo = Photo::create([
+                        "path" => $fileName,
+                        "date" => $dateTimeOriginal,
+                    ]);
 
-                $photo->players()->attach(request()->players); //追加 photoとplayerのリレーション
-        
-         
-             }else{
-         
-                 return redirect('photo');
-             }
-         
-             return redirect('photo');
-         
-         }
+                    $photo->players()->attach(request()->players); //追加 photoとplayerのリレーション
+                    
+
+            
+            
+                // }
+                // else{
+            
+                //     return redirect('photo');
+                // }
+            
+                // return redirect('photo');
+            
+            }}
+            return redirect('photo');
+        }
          
 }

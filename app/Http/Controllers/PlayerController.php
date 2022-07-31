@@ -70,7 +70,13 @@ class PlayerController extends Controller
      */
     public function edit($id)
     {
-        return view('playersedit',compact('player'));
+        // return view('playersedit',compact('player'));
+
+        $player = Player::find($id);
+        $photos = $player->photos->pluck('id')->toArray();
+        $photoList = Photo::all();
+        return view('playersedit', compact('player', 'photos', 'photoList'));
+
     }
 
     /**
@@ -88,7 +94,12 @@ class PlayerController extends Controller
             'nickname' => 'required|max:255',
             'number' => 'required',
         ]);
+        // $player->update($updateData);
+        // return redirect('/players');
+
+        $player = Player::find($id);
         $player->update($updateData);
+        $player->photos()->attach(request()->photos); //attach()によって更新しても中間テーブルの情報を維持
         return redirect('/players');
     }
 
@@ -100,7 +111,9 @@ class PlayerController extends Controller
      */
     public function destroy($id)
     {
+        $player = Player::find($id);
         $player->delete();
+        $player->photos()->detach();
         return redirect('/players');
     }
 }

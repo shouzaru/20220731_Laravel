@@ -1,63 +1,59 @@
 <!-- resources/views/books.blade.php -->
 @extends('layouts.app')
- @section('content')
-
+@section('content')
 <!-- Bootstrapの定形コード… -->
-<div class="card-body">
-         <div class="card-title">
-             写真アップロード
+
+<!-- ナビゲーションメニュー -->
+<div class="container mt-2 mb-2">
+        <ul class="nav nav-tabs">
+            <il class="nav-item">
+                <a href="{{ route('photo.index') }}" class="nav-link">写真一覧</a>
+            </il>
+            <il class="nav-item">
+                <a href="{{ route('photo.create') }}" class="nav-link active">写真アップロード</a>
+            </il>
+            <il class="nav-item">
+                <a href="{{ url('players') }}" class="nav-link">選手登録</a>
+            </il>
+        </ul>
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>写真アップロード</h1>
+            <div>
+                <form action="{{ url('/photos/upload') }}" method="post" enctype="multipart/form-data">
+                    {{ csrf_field() }}
+                    <div class="form-group">
+                        <!-- <input id="fileUploader" type="file" name="photo" accept='image/' enctype="multipart/form-data" multiple="multiple" required autofocus> -->
+                        <input id="fileUploader" type="file" name="photo[]" accept='image/' enctype="multipart/form-data" multiple="multiple" required autofocus>  <!--複数ファイルのアップロード-->
+                    </div>
+                    <div>
+                        @foreach($players as $player)
+                            <label>
+                                <input type="checkbox" name="players[]" value="{{ $player->id }}">{{ $player->nickname }}
+                            </label>
+                        @endforeach
+                    </div>
+                    <button type="submit" class="btn btn-primary">送信する</button>
+                </form>
+            </div>
+        </div>
     </div>
-
-<!-- バリデーションエラーの表示に使用-->
-         <!-- resources/views/common/errors.blade.php -->
-         @if (count($errors) > 0)
-             <!-- Form Error List -->
-             <div class="alert alert-danger">
-                 <div><strong>入力した文字を修正してください。</strong></div> 
-                 <div>
-                     <ul>
-                     @foreach ($errors->all() as $error)
-                         <li>{{ $error }}</li>
-                     @endforeach
-                     </ul>
-                 </div>
-             </div>
-         @endif
-<!-- バリデーションエラーの表示に使用-->
+</div>
 
 
-<form action="{{ url('/photos/upload') }}" method="post" enctype="multipart/form-data">
-    {{ csrf_field() }}
-    <div class="form-group">
-        <input id="fileUploader" type="file" name="photo" accept='image/' enctype="multipart/form-data" multiple="multiple" required autofocus>
-    </div>
 
-    <div>
-        @foreach($players as $player)
-        <label>
-            <input type="checkbox" name="players[]" value="{{ $player->id }}">{{ $player->nickname }}
-        </label>
-        @endforeach
-    </div>
 
-    <button type="submit" class="btn btn-primary">送信する</button>
-</form>
+
+
+
+
 
 
 <hr>
-<div>
-    <h1>アップロード済み写真一覧</h1>
-@foreach($photos->sortByDesc('date') as $photo)  <!--古いものから並べるにはsortBy()-->
-<div style="width: 18rem; float:left; margin: 1px;">
-	<img src="/uploads/{{ $photo->path }}" style="width:100%;"/>
-	<p>{{ $photo->date }}</p>
-    
-
-</div>
-@endforeach
-</div>
-
-<div>
 
 
 

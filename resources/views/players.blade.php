@@ -1,17 +1,30 @@
 <!-- resources/views/books.blade.php -->
 @extends('layouts.app')
- @section('content')
-     <!-- Bootstrapの定形コード… -->
-     <div class="card-body">
-         <div class="card-title">
-             選手名
-         </div>
-         <!-- バリデーションエラーの表示に使用-->
+@section('content')
+<!-- Bootstrapの定形コード… -->
+
+<!-- ナビゲーションメニュー -->
+<div class="container mt-2 mb-2">
+        <ul class="nav nav-tabs">
+            <il class="nav-item">
+                <a href="{{ route('photo.index') }}" class="nav-link">写真一覧</a>
+            </il>
+            <il class="nav-item">
+                <a href="{{ route('photo.create') }}" class="nav-link">写真アップロード</a>
+            </il>
+            <il class="nav-item">
+                <a href="{{ url('players') }}" class="nav-link active">選手登録</a>
+            </il>
+        </ul>
+</div>
+
+
+       <!-- バリデーションエラーの表示に使用-->
          <!-- resources/views/common/errors.blade.php -->
          @if (count($errors) > 0)
              <!-- Form Error List -->
              <div class="alert alert-danger">
-                 <div><strong>入力した文字を修正してください。</strong></div> 
+                 <div><strong>正しく入力してください</strong></div> 
                  <div>
                      <ul>
                      @foreach ($errors->all() as $error)
@@ -22,48 +35,57 @@
              </div>
          @endif
          <!-- バリデーションエラーの表示に使用-->
-         <!-- 本登録フォーム -->
-         <form action="{{ url('players') }}" method="POST" class="form-horizontal">
-             {{ csrf_field() }}
-             <!-- 選手名 -->
-             <div class="form-group">
-                 <label for="name_kanji">選手名（漢字）</label>
-                 <div class="col-sm-6">
-                     <input type="text" name="name_kanji" class="form-control">
-                 </div>
-             </div>
-             <!-- 選手名 -->
-             <div class="form-group">
-                 <label for="name_kana">選手名（英字表記）</label>
-                 <div class="col-sm-6">
-                     <input type="text" name="name_kana" class="form-control">
-                 </div>
-             </div>
-            <!-- 選手名 -->
-            <div class="form-group">
-                 <label for="nickname">ニックネーム</label>
-                 <div class="col-sm-6">
-                     <input type="text" name="nickname" class="form-control">
-                 </div>
-             </div>
-            <!-- 背番号 -->
-            <div class="form-group">
-                 <label for="number">背番号</label>
-                 <div class="col-sm-6">
-                     <input type="text" name="number" class="form-control">
-                 </div>
-             </div>
 
-             <!-- 本 登録ボタン -->
-             <div class="form-group">
-                 <div class="col-sm-offset-3 col-sm-6">
-                     <button type="submit" class="btn btn-primary">
-                        登録
-                     </button>
-                 </div>
-             </div>
-         </form>
-     </div>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="card-body">
+            <!-- 本登録フォーム -->
+                <form action="{{ url('players') }}" method="POST" class="form-horizontal">
+                {{ csrf_field() }}
+             <!-- 選手名 -->
+                <div class="form-group">
+                    <label for="name_kanji">選手名（漢字）</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="name_kanji" class="form-control">
+                    </div>
+                </div>
+             <!-- 選手名 -->
+                <div class="form-group">
+                    <label for="name_kana">選手名（英字表記）</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="name_kana" class="form-control">
+                    </div>
+                </div>
+            <!-- 選手名 -->
+                <div class="form-group">
+                    <label for="nickname">ニックネーム</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="nickname" class="form-control">
+                    </div>
+                </div>
+            <!-- 背番号 -->
+                <div class="form-group">
+                    <label for="number">背番号</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="number" class="form-control">
+                    </div>
+                </div>
+             <!-- 登録ボタン -->
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-6">
+                        <button type="submit" class="btn btn-primary">登録</button>
+                    </div>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
      <!-- Book: 既に登録されてる本のリスト -->
      <!-- 現在の本 -->
      @if (count($players) > 0)
